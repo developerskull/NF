@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="200" height="200" fill="#0c0c0e" stroke="#1f1f24" stroke-width="2"/>
+  
+  <!-- Blueprint Grid lines -->
+  <line x1="0" y1="50" x2="200" y2="50" stroke="#ff5b00" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="2 2"/>
+  <line x1="0" y1="100" x2="200" y2="100" stroke="#ff5b00" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="2 2"/>
+  <line x1="0" y1="150" x2="200" y2="150" stroke="#ff5b00" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="2 2"/>
+  <line x1="50" y1="0" x2="50" y2="200" stroke="#ff5b00" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="2 2"/>
+  <line x1="100" y1="0" x2="100" y2="200" stroke="#ff5b00" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="2 2"/>
+  <line x1="150" y1="0" x2="150" y2="200" stroke="#ff5b00" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="2 2"/>
+
+  <!-- Viewfinder Corners -->
+  <path d="M 15 25 L 15 15 L 25 15" stroke="#ff5b00" stroke-width="1" fill="none" opacity="0.6"/>
+  <path d="M 185 25 L 185 15 L 175 15" stroke="#ff5b00" stroke-width="1" fill="none" opacity="0.6"/>
+  <path d="M 15 175 L 15 185 L 25 185" stroke="#ff5b00" stroke-width="1" fill="none" opacity="0.6"/>
+  <path d="M 185 175 L 185 185 L 175 185" stroke="#ff5b00" stroke-width="1" fill="none" opacity="0.6"/>
+
+  <!-- Helmet Silhouette Outline -->
+  <!-- Outer Dome -->
+  <path d="M 60 110 C 60 55, 140 55, 140 110 C 140 115, 138 125, 135 130 L 132 135 C 130 140, 120 145, 100 145 C 80 145, 70 140, 68 135 L 65 130 C 62 125, 60 115, 60 110 Z" fill="#141418" stroke="#ff5b00" stroke-width="1.5" opacity="0.8"/>
+  
+  <!-- Visor -->
+  <path d="M 70 90 C 70 85, 130 85, 130 90 C 130 95, 125 110, 100 110 C 75 110, 70 95, 70 90 Z" fill="#08080a" stroke="#ff5b00" stroke-width="1" opacity="0.9"/>
+  <path d="M 75 92 Q 100 102 125 92" stroke="#ff5b00" stroke-width="0.75" fill="none" opacity="0.4"/>
+  
+  <!-- Tech lines inside silhouette -->
+  <line x1="100" y1="58" x2="100" y2="78" stroke="#ff5b00" stroke-width="1" opacity="0.4"/>
+  <circle cx="100" cy="54" r="2" fill="#ff5b00" opacity="0.6"/>
+
+  <!-- Technical Metadata Label -->
+  <text x="100" y="168" font-family="monospace" font-size="8" fill="#ff5b00" font-weight="bold" text-anchor="middle" letter-spacing="1" opacity="0.6">[ CREW_MEMBER // #NF_ID ]</text>
+  <text x="100" y="180" font-family="monospace" font-size="6" fill="#888" text-anchor="middle" letter-spacing="0.5" opacity="0.5">PHOTO_RECORD_PENDING</text>
+</svg>

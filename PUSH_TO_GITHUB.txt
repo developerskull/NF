@@ -1,0 +1,58 @@
+========================================
+PUSH NIGHT FURY TO YOUR GITHUB ACCOUNT
+========================================
+
+Your GitHub: https://github.com/developerskull/
+
+STEP 1: Create "nf" Repository
+-------------------------------
+1. Go to: https://github.com/new
+   OR
+   Click here: https://github.com/developerskull?tab=repositories
+   Then click the green "New" button
+
+2. Fill in:
+   - Repository name: nf
+   - Description: Night Fury Racing Team Website
+   - Visibility: Public (or Private if you prefer)
+   - DO NOT check any initialization options
+   
+3. Click "Create repository"
+
+
+STEP 2: Push Your Code
+-----------------------
+Open Command Prompt or PowerShell and run these commands:
+
+cd C:\Users\Kunal\Desktop\nightfury
+
+git remote add origin https://github.com/developerskull/nf.git
+
+git branch -M main
+
+git push -u origin main
+
+
+STEP 3: Enter Credentials
+--------------------------
+When prompted for password, use your Personal Access Token:
+- Get token from: https://github.com/settings/tokens
+- Click "Generate new token (classic)"
+- Select "repo" scope
+- Copy and use as password
+
+
+DONE! Your project will be at:
+https://github.com/developerskull/nf
+
+
+ENABLE FREE HOSTING (Optional):
+--------------------------------
+After pushing, enable GitHub Pages:
+1. Go to: https://github.com/developerskull/nf/settings/pages
+2. Under "Source", select "main" branch
+3. Click "Save"
+4. Your site will be live at:
+   https://developerskull.github.io/nf/
+
+========================================

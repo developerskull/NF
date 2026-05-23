@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIGHT FURY // Engineering & Racing Lab</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="tech-lab">
+    <!-- Technical Blueprint Loader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-helmet">⚙️</div>
+            <div class="blueprint-logo">
+                <span class="tech-num">[SYS_INIT]</span>
+                <div class="logo-brand-preloader">
+                    <img src="logo.png" alt="Night Fury Team Logo" class="loader-logo-img">
+                    <h2>NIGHT FURY</h2>
+                </div>
+            </div>
+            <div class="progress-details">
+                <div class="progress-labels">
+                    <span id="load-status">LOADING SCHEMATICS...</span>
+                    <span class="speed-number">00</span><span class="pct">%</span>
+                </div>
+                <div class="loader-bar">
+                    <div class="loader-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-Time Interactive Lab Cursor Crosshair (Desktop Only) -->
+    <div id="precision-cursor" class="lab-cursor">
+        <div class="cursor-reticle"></div>
+        <span class="cursor-coords">X:0000 // Y:0000</span>
+    </div>
+
+    <!-- Background Blueprint Grid Pattern -->
+    <div class="blueprint-grid-bg"></div>
+
+    <!-- Technical Live HUD Dashboard (Under Header) -->
+    <div class="lab-hud-ribbon">
+        <div class="hud-item"><span class="hud-label">GARAGE_MODE:</span> <span class="hud-val pulse-val">ACTIVE // MONITORING</span></div>
+        <div class="hud-item"><span class="hud-label">TRACK_TEMP:</span> <span class="hud-val" id="hud-track-temp">32.4°C</span></div>
+        <div class="hud-item"><span class="hud-label">AIR_PRESSURE:</span> <span class="hud-val">1013 hPa</span></div>
+        <div class="hud-item"><span class="hud-label">LINK_STATUS:</span> <span class="hud-val text-blue">TELEMETRY_SYNC</span></div>
+        <div class="hud-item"><span class="hud-label">CALIBRATION:</span> <span class="hud-val text-orange">STAGE_04_OK</span></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="logo">
+            <a href="#home">
+                <span class="logo-tag">[ NF_LABS.01 ]</span>
+                <div class="logo-brand">
+                    <img src="logo.png" alt="Night Fury Team Logo" class="logo-img">
+                    <h1>NIGHT <span>FURY</span></h1>
+                </div>
+            </a>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#home" class="active"><span class="nav-num">00.</span> HOME</a></li>
+                <li><a href="#about"><span class="nav-num">01.</span> SCHEMATICS</a></li>
+                <li><a href="#karts"><span class="nav-num">02.</span> THE MACHINES</a></li>
+                <li><a href="#events"><span class="nav-num">03.</span> RACE TIMELINE</a></li>
+                <li><a href="#team"><span class="nav-num">04.</span> CREW</a></li>
+                <li><a href="#photos"><span class="nav-num">05.</span> LOG_FEED</a></li>
+                <li><a href="#contact"><span class="nav-num">06.</span> JOIN</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Laboratory Light Schema">
+                <span class="sun-icon">⚪</span>
+                <span class="moon-icon">⚫</span>
+            </button>
+            <a href="#contact" class="cta-btn header-cta">INITIATE CONNECTION</a>
+        </div>
+        <!-- Mobile menu toggle -->
+        <button class="mobile-menu-btn" aria-label="Toggle Technical Drawer">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- Hero / Landing Section -->
+    <section class="hero" id="home">
+        <!-- Viewfinder Target Bracket Accents -->
+        <div class="viewfinder-corner tl"></div>
+        <div class="viewfinder-corner tr"></div>
+        <div class="viewfinder-corner bl"></div>
+        <div class="viewfinder-corner br"></div>
+
+        <div class="hero-container">
+            <!-- Left Wing: High-Impact Telemetry & Heading -->
+            <div class="hero-left">
+                <div class="technical-system-status">
+                    <span class="pulse-indicator"></span>
+                    <span class="status-text">[ CORE_BUS: ACTIVE // SYS_IGNITION_OK ]</span>
+                </div>
+                
+                <h1 class="main-heading">
+                    ENGINEERED<br>FOR <span class="highlight">VELOCITY</span>
+                </h1>
+                
+                <p class="hero-description">
+                    Night Fury is an advanced collegiate engineering laboratory designing, fabricating, and racing high-performance karts. We turn mathematical CAD models into track-dominating realities.
+                </p>
+                
+                <!-- Hero telemetry panels -->
+                <div class="hero-telemetry-panels">
+                    <div class="hero-tel-panel">
+                        <span class="tel-label">CHASSIS_FRAME</span>
+                        <span class="tel-val">CHROMOLY STEEL</span>
+                    </div>
+                    <div class="hero-tel-panel">
+                        <span class="tel-label">MAX_CALIBRATION</span>
+                        <span class="tel-val">24.2 HP // 12.5k RPM</span>
+                    </div>
+                    <div class="hero-tel-panel">
+                        <span class="tel-label">RATIO_PWR/WT</span>
+                        <span class="tel-val">220 HP/TON</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#about" class="cta-btn btn-primary">SPECIFICATIONS</a>
+                    <a href="#karts" class="cta-btn btn-secondary">DEVELOPMENT STAGE</a>
+                </div>
+            </div>
+            
+            <!-- Right Wing: Interactive CAD Station Drawing Viewport -->
+            <div class="hero-right">
+                <div class="cad-viewport-box">
+                    <!-- Scanning Horizontal Laser Line -->
+                    <div class="cad-laser-scanner"></div>
+                    <div class="cad-grid-overlay"></div>
+                    
+                    <img src="Image.png" alt="Night Fury Go-Kart CAD Rendering" class="cad-chassis-render">
+                    
+                    <!-- HUD Text Metadata labels -->
+                    <div class="cad-hud-label top-left">[ VIEWPORT: CAD_FRONT_ORTHO ]</div>
+                    <div class="cad-hud-label top-right">LAT: 12.9716° N</div>
+                    <div class="cad-hud-label bottom-left">[ ZOOM: 100% // GRID_35MM ]</div>
+                    <div class="cad-hud-label bottom-right">LON: 77.5946° E</div>
+                    
+                    <!-- Pulsing Crosshair Reticle -->
+                    <div class="cad-target-crosshair">
+                        <div class="crosshair-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span class="mouse-wheel"></span>
+            <span class="scroll-text">SYSTEM_SCROLL</span>
+        </div>
+    </section>
+
+    <!-- Technical About Us Section -->
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_01 ]</span>
+                <h2 class="section-title">THE <span>BLUEPRINT</span></h2>
+                <p class="section-subtitle">Our design, fabrication, and track development workflow.</p>
+            </div>
+            
+            <div class="about-grid">
+                <!-- Text / Technical Specs -->
+                <div class="about-details">
+                    <div class="technical-item">
+                        <div class="item-header">
+                            <span class="item-index">01/</span>
+                            <h3>CAD Structural Simulation</h3>
+                        </div>
+                        <p>Chassis components are modeled in SolidWorks and subjected to strict Finite Element Analysis (FEA) to maximize torsional stiffness while minimizing raw mass.</p>
+                    </div>
+                    
+                    <div class="technical-item">
+                        <div class="item-header">
+                            <span class="item-index">02/</span>
+                            <h3>TIG Welding & Custom Fab</h3>
+                        </div>
+                        <p>We hand-weld our chromoly steel frames within Lab 4, refining steering knuckles and weight distributions to target optimal 40/60 balancing.</p>
+                    </div>
+                    
+                    <div class="technical-item">
+                        <div class="item-header">
+                            <span class="item-index">03/</span>
+                            <h3>Data Acquisition & Telemetry</h3>
+                        </div>
+                        <p>Real-time lap tracking, sensor-logged tire temperatures, and engine rpm curves help drivers extract peak performance on track.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Graphic Grid -->
+                <div class="about-stats">
+                    <div class="stat-card" data-val="1">
+                        <div class="stat-inner">
+                            <span class="stat-label">CHAMPIONSHIPS</span>
+                            <div class="stat-number" id="stat-wins">00</div>
+                            <span class="stat-sub">National Level</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-val="25">
+                        <div class="stat-inner">
+                            <span class="stat-label">OPERATIVES</span>
+                            <div class="stat-number" id="stat-members">00</div>
+                            <span class="stat-sub">Engineers & Crew</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-val="1.5">
+                        <div class="stat-inner">
+                            <span class="stat-label">R&D TIMELINE</span>
+                            <div class="stat-number" id="stat-experience">0.0</div>
+                            <span class="stat-sub">Years Track Experience</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-val="100">
+                        <div class="stat-inner">
+                            <span class="stat-label">TEST RECORDS</span>
+                            <div class="stat-number" id="stat-tests">000</div>
+                            <span class="stat-sub">System Validation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kart Showcase Section -->
+    <section class="karts-section" id="karts">
+        <div class="karts-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_02 ]</span>
+                <h2 class="section-title">THE <span>MACHINES</span></h2>
+                <p class="section-subtitle">Championship-winning mechanical assemblies.</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="kart-tabs">
+                <button class="kart-tab-btn active" data-kart="beast">SPEC-24 "BEAST" (ICE)</button>
+                <button class="kart-tab-btn" data-kart="volt">SPEC-26 "VOLT" (EV)</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="kart-display-grid">
+                <!-- Image Side (Rendered as structural drawing with CAD leader line annotations!) -->
+                <div class="kart-preview-card">
+                    <img src="Image.png" alt="Night Fury Go Kart Drawing" class="kart-image active" id="kart-display-img">
+                    <div class="blueprint-crosshair"></div>
+                    <div class="blueprint-axis">X: 2420mm // Y: 1400mm</div>
+                    
+                    <!-- Dynamic CAD Leader Line Annotations -->
+                    <div class="blueprint-annotations">
+                        <div class="anno-pointer anno-aero" style="top: 15%; left: 35%;">
+                            <div class="pointer-dot"></div>
+                            <div class="pointer-line line-tl"></div>
+                            <div class="pointer-text">[ ANNO_01: ADV_AERO_ spoiler ]</div>
+                        </div>
+                        <div class="anno-pointer anno-steering" style="top: 70%; left: 22%;">
+                            <div class="pointer-dot"></div>
+                            <div class="pointer-line line-bl"></div>
+                            <div class="pointer-text">[ ANNO_02: ACKERMANN_STEER ]</div>
+                        </div>
+                        <div class="anno-pointer anno-power" style="top: 45%; left: 75%;">
+                            <div class="pointer-dot"></div>
+                            <div class="pointer-line line-r"></div>
+                            <div class="pointer-text" id="anno-engine-text">[ ANNO_03: 125cc_2_STROKE_ICE ]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Side -->
+                <div class="kart-specs-card">
+                    <div class="kart-spec-details active" id="spec-beast">
+                        <div class="kart-header-data">
+                            <h3>NF-24 BEAST</h3>
+                            <span class="tech-code">[ UNIT_01 // GASOLINE ]</span>
+                        </div>
+                        <p class="kart-desc">Our championship-winning gasoline go-kart. Optimized for high-rev mechanical resilience, aggressive throttle profiles, and extreme cornering force.</p>
+                        
+                        <div class="spec-table">
+                            <div class="spec-row">
+                                <span class="spec-label">TOP SPEED</span>
+                                <span class="spec-val">110 KM/H</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">ACCELERATION</span>
+                                <span class="spec-val">3.8 SEC (0-60)</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">CHASSIS</span>
+                                <span class="spec-val">Chromoly Space Frame</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">POWERPLANT</span>
+                                <span class="spec-val">125cc 2-Stroke ICE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kart-spec-details" id="spec-volt">
+                        <div class="kart-header-data">
+                            <h3>NF-26 VOLT</h3>
+                            <span class="tech-code">[ UNIT_02 // ELECTRIC ]</span>
+                        </div>
+                        <p class="kart-desc">Next-generation electric drivetrain. Features high-density battery packs, active torque-vectoring controllers, and regenerative brake calipers.</p>
+                        
+                        <div class="spec-table">
+                            <div class="spec-row">
+                                <span class="spec-label">TOP SPEED</span>
+                                <span class="spec-val">130 KM/H</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">ACCELERATION</span>
+                                <span class="spec-val">2.9 SEC (0-60)</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">BATTERY CAPACITY</span>
+                                <span class="spec-val">4.2 kWh Lithium-Ion</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">PEAK TORQUE</span>
+                                <span class="spec-val">70 Nm Instant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competitions Timeline Section -->
+    <section class="competitions-section" id="events">
+        <div class="competitions-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_03 ]</span>
+                <h2 class="section-title">RACE <span>TIMELINE</span></h2>
+                <p class="section-subtitle">Championship runs, logs, and upcoming campaigns.</p>
+            </div>
+            
+            <div class="timeline-grid">
+                <!-- Past Card 1 -->
+                <div class="timeline-card completed">
+                    <div class="card-status-label">[ STATUS: COMPLETED ]</div>
+                    <div class="card-header">
+                        <h3>National Karting Championship</h3>
+                        <span class="card-date">15.02.2024</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Meco Kartopia, Bangalore</p>
+                        <p class="card-desc">Challenging technical circuit. Our lightweight steering assembly and aerodynamic chassis profiles yielded top-tier cornering speed.</p>
+                        <div class="card-victory podium-1">
+                            <span class="trophy">🏆</span> 1st Place (National Champions)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Card 2 -->
+                <div class="timeline-card completed">
+                    <div class="card-status-label">[ STATUS: COMPLETED ]</div>
+                    <div class="card-header">
+                        <h3>Regional Speed Challenge</h3>
+                        <span class="card-date">10.11.2023</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Chicane Circuit, Hyderabad</p>
+                        <p class="card-desc">Rainy track conditions. Tested the durability of our waterproofing engine seals and rain-tire compounds.</p>
+                        <div class="card-victory">
+                            🏁 Finished 5th (Out of 45 Teams)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Card 1 -->
+                <div class="timeline-card upcoming">
+                    <div class="card-status-label">[ STATUS: IN_PREPARATION ]</div>
+                    <div class="card-header">
+                        <h3>State Karting Grand Prix</h3>
+                        <span class="card-date">15.06.2026</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Mohite's Racing Academy, Kolhapur</p>
+                        <p class="card-desc">Testing ground for the new carbon spoiler layouts. Focused on high-speed corner stability.</p>
+                        <div class="competition-countdown" id="countdown-gp" data-date="2026-06-15T09:00:00">
+                            CALCULATING...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Card 2 -->
+                <div class="timeline-card upcoming">
+                    <div class="card-status-label">[ STATUS: IN_PREPARATION ]</div>
+                    <div class="card-header">
+                        <h3>Inter-College Karting League</h3>
+                        <span class="card-date">20.08.2026</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Kari Motor Speedway, Coimbatore</p>
+                        <p class="card-desc">Collegiate electric vs gasoline showdown. Debut run for our NF-26 Volt powertrain.</p>
+                        <div class="competition-countdown" id="countdown-league" data-date="2026-08-20T09:00:00">
+                            CALCULATING...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crew / Team Section -->
+    <section class="team-section" id="team">
+        <div class="team-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_04 ]</span>
+                <h2 class="section-title">THE <span>CREW</span></h2>
+                <p class="section-subtitle">Laboratory technicians, fabricators, and pilots.</p>
+            </div>
+            
+            <div class="team-grid">
+                <!-- Faculty Advisor -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-00</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="Teamcoordinator.png" alt="Dr. Amol R. Rasane">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Dr. Amol R. Rasane</h3>
+                        <span class="crew-role">Faculty Coordinator // Advisor</span>
+                        <p class="crew-desc">Directs academic compliance, research approvals, and collegiate laboratory relations.</p>
+                    </div>
+                </div>
+
+                <!-- Captain -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-01</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="Chetan Thakare">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Chetan Thakare</h3>
+                        <span class="crew-role">Team Captain // Driver</span>
+                        <p class="crew-desc">Oversees chassis dynamics, racing telemetry, and driver coaching logs.</p>
+                    </div>
+                </div>
+
+                <!-- Vice Captain -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-02</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="Pratik Kokate">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Pratik Kokate</h3>
+                        <span class="crew-role">Vice Captain // Welder</span>
+                        <p class="crew-desc">Specializes in precision TIG structural welding and axle alignments.</p>
+                    </div>
+                </div>
+
+                <!-- Manager -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-03</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="Anushka Mali">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Anushka Mali</h3>
+                        <span class="crew-role">Team Manager // Relations</span>
+                        <p class="crew-desc">Directs sponsorship, budget allocations, and public outreach records.</p>
+                    </div>
+                </div>
+
+                <!-- Pit Chief -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-04</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="David Brown">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>David Brown</h3>
+                        <span class="crew-role">Crew Chief // Telemetry</span>
+                        <p class="crew-desc">Directs garage setup, tire temp datalogs, and gearbox tuning schedules.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento Gallery Section -->
+    <section class="gallery-section" id="photos">
+        <div class="gallery-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_05 ]</span>
+                <h2 class="section-title">THE <span>LOGS</span></h2>
+                <p class="section-subtitle">Visual feeds from engineering schematics to pit stop runs.</p>
+            </div>
+            
+            <div class="gallery-bento">
+                <div class="gallery-item bento-tall">
+                    <img src="Image.png" alt="Chassis CAD Outline">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_01 // CHASSIS_FEA</h4>
+                        <p>Torsional load structural tests</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-wide">
+                    <img src="Image.png" alt="Kart on Racetrack">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_02 // SPEED_RUN</h4>
+                        <p>High speed telemetry capture</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-standard">
+                    <img src="Image.png" alt="Podium celebration">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_03 // PODIUM_FINISH</h4>
+                        <p>National Championship win</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-standard">
+                    <img src="Image.png" alt="Engine block Assembly">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_04 // CARBURETOR_TUNE</h4>
+                        <p>Jetting adjustments inside Lab 4</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-wide">
+                    <img src="Image.png" alt="Aerodynamic air resistance simulation">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_05 // CFD_SPOILER</h4>
+                        <p>Airfoil pressure flow mapping</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Sections Grid -->
+    <section class="content-grid">
+        <div class="content-card">
+            <div class="card-meta">[ REGISTRATION // SESSION_2026 ]</div>
+            <h3>Club Membership</h3>
+            <p>Interested in joining the racing development lab? Registrations are currently open for structural design, battery wiring, and driver recruitment.</p>
+            <div class="card-details">
+                <span>Prerequisites: Monospace log dedication & CAD basics.</span>
+            </div>
+            <a href="#contact" class="card-btn">INITIATE APP</a>
+        </div>
+
+        <div class="content-card">
+            <div class="card-meta">[ INFORMATION // ABOUT_US ]</div>
+            <h3>The Motorsport Lab</h3>
+            <p>Born inside the college Mechanical Engineering department, Night Fury serves as a platform to test advanced chassis theories on active asphalt racetracks.</p>
+            <p>We are funded by institutional departments, engineering alumni, and industry automotive sponsors.</p>
+            <a href="#about" class="card-btn">TECHNICAL DOSSIER</a>
+        </div>
+
+        <div class="content-card">
+            <div class="card-meta">[ LIVE TELEMETRY // REAL_TIME ]</div>
+            <h3>Latest Speed Runs</h3>
+            
+            <!-- Real-Time Telemetry Graph Canvas (Details Upgrade) -->
+            <div class="telemetry-canvas-container">
+                <canvas id="telemetry-graph" width="280" height="140"></canvas>
+                <div class="canvas-labels">
+                    <span class="active-rpm">RPM: <strong id="telemetry-rpm">5200</strong></span>
+                    <span class="active-speed">VEL: <strong id="telemetry-speed">0.0</strong> km/h</span>
+                </div>
+            </div>
+            
+            <p class="video-meta">ENGINE_RPM // live calculated lab simulation</p>
+            <button class="card-btn" id="play-video-btn">ACCESS FOOTAGE</button>
+        </div>
+    </section>
+
+    <!-- Contact & Join Us Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_06 ]</span>
+                <h2 class="section-title">ESTABLISH <span>LINK</span></h2>
+                <p class="section-subtitle">Become a driver, technical partner, or corporate sponsor.</p>
+            </div>
+            
+            <div class="contact-grid">
+                <!-- Info -->
+                <div class="contact-info-panel">
+                    <h3>Lab Coordinates</h3>
+                    <p>Connect with our technical leads or visit our workshop facilities directly.</p>
+                    
+                    <div class="coord-list">
+                        <div class="coord-item">
+                            <span class="coord-label">[ EMAIL ]</span>
+                            <span class="coord-val">nightfury@college.edu</span>
+                        </div>
+                        <div class="coord-item">
+                            <span class="coord-label">[ PHONE ]</span>
+                            <span class="coord-val">+91 98765 43210</span>
+                        </div>
+                        <div class="coord-item">
+                            <span class="coord-label">[ LOC ]</span>
+                            <span class="coord-val">Department of Mechanical Engineering, Workshop Lab 4, City</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="contact-form-panel">
+                    <form class="tech-form" id="contact-form">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="name">ID_NAME</label>
+                                <input type="text" id="name" placeholder="Enter Full Name" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="email">ID_EMAIL</label>
+                                <input type="email" id="email" placeholder="email@address.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="subject">LINK_PURPOSE</label>
+                            <select id="subject" required>
+                                <option value="" disabled selected>Select option...</option>
+                                <option value="join">Recruitment / Join Crew</option>
+                                <option value="sponsor">Corporate Sponsorship</option>
+                                <option value="general">Engineering Questions</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="message">LOG_MESSAGE</label>
+                            <textarea id="message" rows="4" placeholder="Type your message details here..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="cta-btn btn-primary submit-btn">TRANSMIT PACKET</button>
+                    </form>
+                    
+                    <div class="form-success-overlay" id="form-success">
+                        <span class="success-icon">✓</span>
+                        <h3>PACKET TRANSMITTED!</h3>
+                        <p>Connection initialized successfully. Telemetry response pending. Standby 12-24 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsors Scrolling Marquee -->
+    <section class="sponsors-section">
+        <div class="sponsors-container">
+            <span class="tech-num">[ PARTNERS ]</span>
+            <div class="marquee-track">
+                <div class="marquee-content">
+                    <span>[ APEX_RACING ]</span>
+                    <span>[ PRO_TOOL_CO ]</span>
+                    <span>[ VOLT_DYNAMICS ]</span>
+                    <span>[ NEXUS_ENERGIES ]</span>
+                    <span>[ VICTOR_HELMETS ]</span>
+                    <span>[ CYBER_AUTOMOTIVE ]</span>
+                    <!-- Loop duplication -->
+                    <span>[ APEX_RACING ]</span>
+                    <span>[ PRO_TOOL_CO ]</span>
+                    <span>[ VOLT_DYNAMICS ]</span>
+                    <span>[ NEXUS_ENERGIES ]</span>
+                    <span>[ VICTOR_HELMETS ]</span>
+                    <span>[ CYBER_AUTOMOTIVE ]</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Laboratory Footer -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo-brand-footer">
+                    <img src="logo.png" alt="Night Fury Team Logo" class="footer-logo-img">
+                    <h2>NIGHT <span>FURY</span></h2>
+                </div>
+                <p>Advanced engineering and development racing laboratory.</p>
+                <div class="social-links">
+                    <a href="#">FB</a>
+                    <a href="#">IG</a>
+                    <a href="#">TW</a>
+                    <a href="#">YT</a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>INDEX</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">00. Home</a></li>
+                    <li><a href="#about">01. Schematics</a></li>
+                    <li><a href="#karts">02. The Machines</a></li>
+                    <li><a href="#events">03. Race Timeline</a></li>
+                    <li><a href="#team">04. Crew</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>CONTACTS</h4>
+                <p>Email: nightfury@college.edu</p>
+                <p>Phone: +91 98765 43210</p>
+                <p>Workshop Lab 4, Campus Grounds</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>GARAGE LOGS</h4>
+                <p>Subscribe to telemetry updates.</p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <input type="email" placeholder="address@email.com" required>
+                    <button type="submit">SUB</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Night Fury Racing Laboratory. Developed & Maintained by <a href="https://github.com/developereskull" target="_blank" style="color: var(--accent-orange); text-decoration: none; font-weight: 700; transition: var(--transition-tech);">Kunal Ahire @ developereskull</a></p>
+            <div class="footer-bottom-links">
+                <a href="#">PRIVACY</a>
+                <span>//</span>
+                <a href="#">TERMS</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+        <span class="close-modal" id="close-video">&times;</span>
+        <div class="modal-content">
+            <div class="video-iframe-holder">
+                <iframe id="modal-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox-modal" class="modal">
+        <span class="close-modal" id="close-lightbox">&times;</span>
+        <div class="modal-content lightbox-holder">
+            <img id="lightbox-img" src="" alt="Datalog expansion">
+            <div id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Optional Ambience Audios -->
+    <audio id="engine-start-sound" src="https://assets.mixkit.co/active_storage/sfx/2653/2653-84.wav" preload="auto"></audio>
+    <audio id="engine-rev-sound" src="https://assets.mixkit.co/active_storage/sfx/2816/2816-84.wav" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,3989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIGHT FURY // Engineering & Racing Lab</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+
+/* Technical Motorsport Blueprint Design Tokens */
+:root {
+    --bg-primary: #0a0a0c;
+    --bg-secondary: #101014;
+    --bg-tertiary: #16161c;
+    --bg-card: rgba(16, 16, 24, 0.65);
+    --header-bg: rgba(10, 10, 12, 0.88);
+    
+    --accent-orange: #ff5b00;       /* Papaya orange */
+    --accent-orange-rgb: 255, 91, 0;
+    --accent-blue: #0066ff;         /* Telemetry blue */
+    --accent-blue-rgb: 0, 102, 255;
+    --border-color: #22222a;
+    
+    --text-primary: #f2f2f7;
+    --text-secondary: #9092a3;
+    --text-muted: #525363;
+    
+    --font-syne: 'Syne', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --font-inter: 'Inter', sans-serif;
+    
+    --transition-tech: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Light Blueprint Schema (Graph Paper Layout) */
+body.light-theme {
+    --bg-primary: #f0f2f6;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e1e4ed;
+    --bg-card: rgba(255, 255, 255, 0.8);
+    --header-bg: rgba(240, 242, 246, 0.85);
+    
+    --accent-orange: #d44c00;
+    --accent-orange-rgb: 212, 76, 0;
+    --accent-blue: #0052cc;
+    --accent-blue-rgb: 0, 82, 204;
+    --border-color: #ccd0dd;
+    
+    --text-primary: #121216;
+    --text-secondary: #5c5e6d;
+    --text-muted: #8b8d9f;
+}
+
+/* Reset and Scrollbars */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-orange) var(--bg-primary);
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body.tech-lab {
+    font-family: var(--font-inter);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    width: 100%;
+    line-height: 1.6;
+    transition: var(--transition-tech);
+}
+
+/* Custom Precision Cursor Crosshair */
+.lab-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 999999;
+    display: none;
+    transform: translate(-50%, -50%);
+}
+
+@media (min-width: 1025px) {
+    body:hover .lab-cursor {
+        display: block;
+    }
+}
+
+.cursor-reticle {
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--accent-orange);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 12px rgba(255, 91, 0, 0.7), inset 0 0 6px rgba(255, 91, 0, 0.4);
+    animation: pulseReticle 1.5s infinite ease-in-out;
+}
+
+.cursor-reticle::before,
+.cursor-reticle::after {
+    content: '';
+    position: absolute;
+    background: var(--accent-orange);
+    box-shadow: 0 0 8px rgba(255, 91, 0, 0.9);
+}
+
+/* Center crosshair hairs */
+.cursor-reticle::before {
+    width: 34px;
+    height: 1px;
+    top: 50%;
+    left: -4px;
+}
+.cursor-reticle::after {
+    height: 34px;
+    width: 1px;
+    left: 50%;
+    top: -4px;
+}
+
+.cursor-coords {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(255, 91, 0, 0.15);
+    border: 1.5px solid var(--accent-orange);
+    box-shadow: 0 0 10px rgba(255, 91, 0, 0.4);
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+}
+
+/* Light theme overrides for glowing blue coordinate reticle */
+body.light-theme .cursor-reticle {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 12px rgba(0, 102, 255, 0.7), inset 0 0 6px rgba(0, 102, 255, 0.4);
+}
+body.light-theme .cursor-reticle::before,
+body.light-theme .cursor-reticle::after {
+    background: var(--accent-blue);
+    box-shadow: 0 0 8px rgba(0, 102, 255, 0.9);
+}
+body.light-theme .cursor-coords {
+    border-color: var(--accent-blue);
+    background: rgba(0, 102, 255, 0.12);
+    color: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(0, 102, 255, 0.3);
+}
+
+@keyframes pulseReticle {
+    0% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+}
+
+/* Webkit Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--accent-orange);
+}
+
+/* Structural Grid Background */
+.blueprint-grid-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: 
+        linear-gradient(to right, rgba(255, 91, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 91, 0, 0.03) 1px, transparent 1px);
+    background-size: 35px 35px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+body.light-theme .blueprint-grid-bg {
+    background-image: 
+        linear-gradient(to right, rgba(0, 102, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 102, 255, 0.05) 1px, transparent 1px);
+}
+
+/* Telemetry Live HUD Bar */
+.lab-hud-ribbon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    background: #060608;
+    border-bottom: 1px solid var(--border-color);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+}
+
+body.light-theme .lab-hud-ribbon {
+    background: #e2e5eb;
+    color: #444;
+}
+
+.hud-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.hud-label {
+    color: var(--text-muted);
+}
+
+.hud-val {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.pulse-val {
+    position: relative;
+    padding-left: 0.8rem;
+}
+
+.pulse-val::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #00ff66;
+    border-radius: 50%;
+    animation: hudPulseDot 1s infinite alternate;
+}
+
+@keyframes hudPulseDot {
+    0% { opacity: 0.3; box-shadow: 0 0 0 rgba(0,255,102,0); }
+    100% { opacity: 1; box-shadow: 0 0 6px rgba(0,255,102,0.8); }
+}
+
+.text-blue {
+    color: var(--accent-blue) !important;
+}
+
+.text-orange {
+    color: var(--accent-orange) !important;
+}
+
+/* Speedometer Preloader */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #08080a;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+#preloader.loaded {
+    transform: translateY(-100%);
+}
+
+.loader-content {
+    max-width: 400px;
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+}
+
+.loader-helmet {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    animation: rotateEngine 2s linear infinite;
+    display: inline-block;
+}
+
+@keyframes rotateEngine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.logo-brand-preloader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.loader-logo-img {
+    height: 65px;
+    width: auto;
+    object-fit: contain;
+}
+
+.blueprint-logo h2 {
+    font-family: var(--font-syne);
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -1px;
+}
+
+.tech-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent-orange);
+    letter-spacing: 2px;
+}
+
+.progress-details {
+    margin-top: 2rem;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.speed-number {
+    font-weight: 700;
+    color: var(--accent-orange);
+}
+
+.loader-bar {
+    width: 100%;
+    height: 2px;
+    background: #1a1a24;
+    overflow: hidden;
+}
+
+.loader-progress {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-orange);
+    transition: width 0.08s ease-out;
+}
+
+/* Audio ambient capsule button */
+.sound-toggle-btn {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 1000;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    width: 45px;
+    height: 45px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-tech);
+}
+
+.sound-toggle-btn:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    transform: translateY(-2px);
+}
+
+.sound-icon-mute {
+    display: none;
+}
+.sound-icon-play {
+    display: block;
+}
+
+.sound-toggle-btn.active .sound-icon-mute {
+    display: block;
+}
+.sound-toggle-btn.active .sound-icon-play {
+    display: none;
+}
+
+/* Header Navigation */
+.main-header {
+    position: fixed;
+    top: 32px; /* Placed cleanly under the active HUD */
+    left: 0;
+    width: 100%;
+    z-index: 10000;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3.5rem;
+    backdrop-filter: blur(10px);
+    transition: var(--transition-tech);
+}
+
+.main-header.scrolled {
+    padding: 0.8rem 3.5rem;
+    background: var(--bg-primary);
+}
+
+.logo a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 2px;
+}
+
+.logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition-tech);
+}
+
+.main-header.scrolled .logo-img {
+    height: 32px;
+}
+
+.logo-tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--accent-orange);
+    letter-spacing: 1px;
+}
+
+.logo h1 {
+    font-family: var(--font-syne);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.logo h1 span {
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.8rem;
+}
+
+.main-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: var(--transition-tech);
+    padding: 0.5rem 0;
+}
+
+.nav-num {
+    color: var(--accent-orange);
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--accent-orange);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.theme-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    width: 38px;
+    height: 38px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: var(--transition-tech);
+    color: var(--text-primary);
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--accent-orange);
+}
+
+.cta-btn {
+    display: inline-block;
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.7rem 1.5rem;
+    border-radius: 4px;
+    transition: var(--transition-tech);
+    cursor: pointer;
+}
+
+.header-cta {
+    background: transparent;
+    border: 1px solid var(--accent-orange);
+    color: var(--text-primary);
+}
+
+.header-cta:hover {
+    background: var(--accent-orange);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 91, 0, 0.25);
+}
+
+.btn-primary {
+    background: var(--accent-orange);
+    color: #ffffff;
+    border: 1px solid transparent;
+}
+
+.btn-primary:hover {
+    background: transparent;
+    border-color: var(--accent-orange);
+    color: var(--text-primary);
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-3px);
+}
+
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.mobile-menu-btn span {
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: var(--transition-tech);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8rem 3.5rem 4rem 3.5rem;
+    z-index: 2;
+    overflow: hidden;
+}
+
+/* Technical Viewfinder HUD Brackets */
+.viewfinder-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid var(--border-color);
+    pointer-events: none;
+    z-index: 10;
+    transition: var(--transition-tech);
+}
+
+.viewfinder-corner.tl {
+    top: 5rem;
+    left: 3.5rem;
+    border-right: none;
+    border-bottom: none;
+}
+
+.viewfinder-corner.tr {
+    top: 5rem;
+    right: 3.5rem;
+    border-left: none;
+    border-bottom: none;
+}
+
+.viewfinder-corner.bl {
+    bottom: 5rem;
+    left: 3.5rem;
+    border-right: none;
+    border-top: none;
+}
+
+.viewfinder-corner.br {
+    bottom: 5rem;
+    right: 3.5rem;
+    border-left: none;
+    border-top: none;
+}
+
+.hero-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 4.5rem;
+    align-items: center;
+    z-index: 5;
+    position: relative;
+}
+
+.hero-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.technical-system-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+}
+
+.pulse-indicator {
+    width: 8px;
+    height: 8px;
+    background: #00ff66;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.8);
+    animation: sysPulseIndicator 1.2s infinite alternate;
+}
+
+@keyframes sysPulseIndicator {
+    0% { transform: scale(0.85); opacity: 0.5; box-shadow: 0 0 4px rgba(0,255,102,0.4); }
+    100% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 10px rgba(0,255,102,0.9); }
+}
+
+.status-text {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: #00ff66;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.main-heading {
+    font-family: var(--font-syne);
+    font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--text-primary);
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+}
+
+.main-heading .highlight {
+    color: var(--accent-orange);
+}
+
+.hero-description {
+    font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 2.2rem;
+}
+
+/* Micro Telemetry HUD Cards */
+.hero-telemetry-panels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 100%;
+    margin-bottom: 2.5rem;
+}
+
+.hero-tel-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.9rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    transition: var(--transition-tech);
+}
+
+.hero-tel-panel:hover {
+    border-color: var(--accent-orange);
+    transform: translateY(-2px);
+}
+
+.tel-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.tel-val {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+/* Right Wing CAD Drawing Station Viewport */
+.hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+}
+
+.cad-viewport-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.15 / 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-tech);
+}
+
+.cad-viewport-box:hover {
+    border-color: var(--accent-orange);
+    box-shadow: 0 15px 40px rgba(255, 91, 0, 0.08);
+}
+
+.cad-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, rgba(255, 91, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 91, 0, 0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+body.light-theme .cad-grid-overlay {
+    background-image: 
+        linear-gradient(to right, rgba(0, 102, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 102, 255, 0.04) 1px, transparent 1px);
+}
+
+/* Linear Scanning Laser Sweep keyframe */
+.cad-laser-scanner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--accent-orange), transparent);
+    opacity: 0.8;
+    z-index: 10;
+    pointer-events: none;
+    animation: cadLaserSweepAnimation 5s ease-in-out infinite;
+}
+
+body.light-theme .cad-laser-scanner {
+    background: linear-gradient(to right, transparent, var(--accent-blue), transparent);
+}
+
+@keyframes cadLaserSweepAnimation {
+    0% { top: 0%; opacity: 0; }
+    5% { opacity: 0.8; }
+    95% { opacity: 0.8; }
+    100% { top: 100%; opacity: 0; }
+}
+
+.cad-chassis-render {
+    width: 95%;
+    height: auto;
+    object-fit: contain;
+    z-index: 2;
+    opacity: 0.85;
+    transition: var(--transition-tech);
+    filter: contrast(1.15);
+}
+
+body.light-theme .cad-chassis-render {
+    filter: invert(1) contrast(1.05);
+    opacity: 0.75;
+}
+
+.cad-viewport-box:hover .cad-chassis-render {
+    transform: scale(1.04);
+    opacity: 1;
+    filter: contrast(1.2) drop-shadow(0 0 15px rgba(255, 91, 0, 0.15));
+}
+
+body.light-theme .cad-viewport-box:hover .cad-chassis-render {
+    filter: invert(1) contrast(1.2) drop-shadow(0 0 15px rgba(0, 102, 255, 0.1));
+}
+
+.cad-hud-label {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    z-index: 3;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.1rem 0.35rem;
+    border-radius: 2px;
+}
+
+.cad-hud-label.top-left { top: 0.8rem; left: 0.8rem; }
+.cad-hud-label.top-right { top: 0.8rem; right: 0.8rem; }
+.cad-hud-label.bottom-left { bottom: 0.8rem; left: 0.8rem; }
+.cad-hud-label.bottom-right { bottom: 0.8rem; right: 0.8rem; }
+
+.cad-target-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--accent-orange);
+    border-radius: 50%;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+body.light-theme .cad-target-crosshair {
+    border-color: var(--accent-blue);
+}
+
+.cad-target-crosshair::before,
+.cad-target-crosshair::after {
+    content: '';
+    position: absolute;
+    background: var(--accent-orange);
+}
+
+body.light-theme .cad-target-crosshair::before,
+body.light-theme .cad-target-crosshair::after {
+    background: var(--accent-blue);
+}
+
+.cad-target-crosshair::before {
+    width: 22px;
+    height: 1px;
+    top: 50%;
+    left: -4px;
+    transform: translateY(-50%);
+}
+
+.cad-target-crosshair::after {
+    height: 22px;
+    width: 1px;
+    left: 50%;
+    top: -4px;
+    transform: translateX(-50%);
+}
+
+.crosshair-pulse {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 22px;
+    height: 22px;
+    border: 1px dashed var(--accent-orange);
+    border-radius: 50%;
+    animation: rotateCadCrosshair 15s linear infinite;
+}
+
+body.light-theme .crosshair-pulse {
+    border-color: var(--accent-blue);
+}
+
+@keyframes rotateCadCrosshair {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.mouse-wheel {
+    width: 22px;
+    height: 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+}
+
+.mouse-wheel::after {
+    content: '';
+    width: 3px;
+    height: 6px;
+    background: var(--accent-orange);
+    border-radius: 1px;
+    animation: scrollAnimation 1.5s infinite alternate;
+}
+
+@keyframes scrollAnimation {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(8px); opacity: 0.2; }
+}
+
+.scroll-text {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+}
+
+/* Sections Global Structure */
+.section-header {
+    margin-bottom: 4.5rem;
+    text-align: center;
+}
+
+.section-title {
+    font-family: var(--font-syne);
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-top: 5px;
+}
+
+.section-title span {
+    color: var(--accent-orange);
+}
+
+.section-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+/* About Section */
+.about-section {
+    padding: 8rem 3.5rem;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.technical-item {
+    border-left: 2px solid var(--border-color);
+    padding-left: 1.8rem;
+    transition: var(--transition-tech);
+}
+
+.technical-item:hover {
+    border-left-color: var(--accent-orange);
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-index {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+}
+
+.technical-item h3 {
+    font-family: var(--font-syne);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.technical-item p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 2.2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-tech);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-orange);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-orange);
+}
+
+.stat-card:hover::after {
+    transform: scaleX(1);
+}
+
+.stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-family: var(--font-syne);
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+}
+
+.stat-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Karts Spec Tabs Section */
+.karts-section {
+    padding: 8rem 3.5rem;
+    background: var(--bg-primary);
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.karts-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.kart-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 4.5rem;
+}
+
+.kart-tab-btn {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.85rem 1.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition-tech);
+}
+
+.kart-tab-btn.active {
+    background: var(--accent-orange);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(255, 91, 0, 0.25);
+}
+
+.kart-display-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.kart-preview-card {
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.kart-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    transition: var(--transition-tech);
+}
+
+.kart-image.active {
+    display: block;
+    animation: zoomOutBlueprint 0.6s ease-out;
+}
+
+@keyframes zoomOutBlueprint {
+    0% { transform: scale(0.96); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.blueprint-crosshair {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-image: 
+        linear-gradient(to right, rgba(255, 91, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 91, 0, 0.05) 1px, transparent 1px);
+    background-size: 15px 15px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.blueprint-axis {
+    position: absolute;
+    bottom: 0.8rem;
+    left: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* CAD Blueprint Annotation Pointer Leaders */
+.blueprint-annotations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.anno-pointer {
+    position: absolute;
+    display: flex;
+    align-items: center;
+}
+
+.pointer-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-orange);
+    border-radius: 50%;
+    position: relative;
+}
+
+.pointer-dot::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--accent-orange);
+    border-radius: 50%;
+    animation: pulseRadar 1.5s infinite ease-out;
+}
+
+body.light-theme .pointer-dot {
+    background: var(--accent-blue);
+}
+body.light-theme .pointer-dot::before {
+    border-color: var(--accent-blue);
+}
+
+@keyframes pulseRadar {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
+}
+
+.pointer-line {
+    height: 1px;
+    border-top: 1px dashed var(--accent-orange);
+    position: relative;
+    opacity: 0.7;
+    transition: var(--transition-tech);
+}
+
+body.light-theme .pointer-line {
+    border-top-color: var(--accent-blue);
+}
+
+.line-tl {
+    width: 45px;
+    transform: rotate(-35deg) translate(-22px, -15px);
+}
+.line-bl {
+    width: 45px;
+    transform: rotate(35deg) translate(-22px, 15px);
+}
+.line-r {
+    width: 50px;
+    transform: translate(5px, 0);
+}
+
+.pointer-text {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--accent-orange);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    opacity: 0.8;
+}
+
+body.light-theme .pointer-text {
+    color: var(--accent-blue);
+}
+
+/* Active Hover effects inside CAD Preview container */
+.kart-preview-card:hover .pointer-line {
+    opacity: 1;
+    width: 60px;
+}
+
+.kart-specs-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 3rem;
+    border-radius: 4px;
+}
+
+.kart-spec-details {
+    display: none;
+}
+
+.kart-spec-details.active {
+    display: block;
+    animation: fadeInTech 0.6s ease-out;
+}
+
+@keyframes fadeInTech {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.kart-header-data {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.kart-header-data h3 {
+    font-family: var(--font-syne);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.kart-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.spec-table {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.spec-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.spec-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.spec-val {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Competitions Race Timeline Section */
+.competitions-section {
+    padding: 8rem 3.5rem;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.competitions-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.timeline-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 2.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: var(--transition-tech);
+}
+
+.card-status-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.timeline-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-orange);
+}
+
+.timeline-card.upcoming:hover {
+    border-color: var(--accent-blue);
+}
+
+.card-header h3 {
+    font-family: var(--font-syne);
+    font-size: 1.35rem;
+    font-weight: 750;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+}
+
+.card-date {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent-orange);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-card.upcoming .card-date {
+    color: var(--accent-blue);
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.card-loc {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.card-victory {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    margin-top: auto;
+}
+
+.card-victory.podium-1 {
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.competition-countdown {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    text-align: center;
+    margin-top: auto;
+}
+
+.competition-countdown strong {
+    color: var(--text-primary);
+}
+
+/* Crew / Team Section */
+.team-section {
+    padding: 8rem 3.5rem;
+    background: var(--bg-primary);
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.team-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+.crew-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.8rem;
+    transition: var(--transition-tech);
+}
+
+.crew-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-orange);
+}
+
+.crew-badge-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.badge-id {
+    color: var(--accent-orange);
+    font-weight: 700;
+}
+
+.crew-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--border-color);
+}
+
+.crew-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.placeholder-img {
+    filter: contrast(1.1) grayscale(1);
+    opacity: 0.4;
+}
+
+.crew-card:hover .crew-photo img {
+    transform: scale(1.08);
+}
+
+.crew-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 12, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.crew-card:hover .crew-overlay {
+    opacity: 1;
+}
+
+.crew-socials {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.crew-socials a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition-tech);
+}
+
+.crew-socials a:hover {
+    border-color: var(--accent-orange);
+    transform: translateY(-2px);
+}
+
+.crew-info {
+    text-align: center;
+}
+
+.crew-info h3 {
+    font-family: var(--font-syne);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+}
+
+.crew-role {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+    display: block;
+    margin-bottom: 0.8rem;
+}
+
+.crew-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Bento Photo Gallery */
+.gallery-section {
+    padding: 8rem 3.5rem;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.gallery-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.gallery-bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 210px;
+    gap: 1.5rem;
+    margin-top: 4rem;
+}
+
+.gallery-item {
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--bg-card);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.06);
+}
+
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 1.2rem;
+    background: linear-gradient(to top, rgba(10,10,12,0.95) 0%, rgba(10,10,12,0.4) 65%, transparent 100%);
+    color: #ffffff;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.gallery-overlay h4 {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    color: var(--accent-orange);
+}
+
+.gallery-overlay p {
+    font-size: 0.8rem;
+    color: #ccc;
+}
+
+/* Bento grid spans */
+.bento-tall {
+    grid-row: span 2;
+}
+.bento-wide {
+    grid-column: span 2;
+}
+
+.gallery-item:hover {
+    border-color: var(--accent-orange);
+}
+
+/* Info Grid Content */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    padding: 8rem 3.5rem;
+    background: var(--bg-primary);
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.content-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 3rem 2.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: var(--transition-tech);
+}
+
+.content-card:hover {
+    border-color: var(--accent-orange);
+}
+
+.card-meta {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+    margin-bottom: 1rem;
+}
+
+.content-card h3 {
+    font-family: var(--font-syne);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+}
+
+.content-card p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 1.2rem;
+}
+
+.card-details {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Dynamic Telemetry Chart detailing */
+.telemetry-canvas-container {
+    background: #060608;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.8rem;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+}
+
+#telemetry-graph {
+    width: 100%;
+    height: 110px;
+    display: block;
+}
+
+.canvas-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.4rem;
+}
+
+.canvas-labels strong {
+    color: var(--accent-orange);
+}
+
+body.light-theme .telemetry-canvas-container {
+    background: #ffffff;
+}
+
+.video-container-card {
+    position: relative;
+    width: 100%;
+    height: 170px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.video-container-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: var(--accent-orange);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition-tech);
+}
+
+.play-button:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-meta {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.card-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-tech);
+}
+
+.card-btn:hover {
+    background: var(--accent-orange);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+/* Contact Us Tech Section */
+.contact-section {
+    padding: 8rem 3.5rem;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-tech);
+}
+
+.contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 3rem;
+}
+
+.contact-info-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.contact-info-panel h3 {
+    font-family: var(--font-syne);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.contact-info-panel p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.coord-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.coord-item {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px dashed var(--border-color);
+    padding-left: 1rem;
+}
+
+.coord-item .coord-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+}
+
+.coord-item .coord-val {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 0.15rem;
+}
+
+.contact-form-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.tech-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: opacity 0.4s ease;
+}
+
+.tech-form.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.input-group label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.85rem 1.2rem;
+    color: var(--text-primary);
+    font-family: var(--font-inter);
+    font-size: 0.9rem;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-orange);
+}
+
+.input-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+}
+
+body.light-theme .input-group select {
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+}
+
+.submit-btn {
+    align-self: flex-start;
+}
+
+/* Success Packet Overlay */
+.form-success-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+    transition: var(--transition-tech);
+    z-index: 2;
+}
+
+.form-success-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.success-icon {
+    font-size: 2.2rem;
+    color: var(--accent-orange);
+    border: 1px solid var(--accent-orange);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-success-overlay h3 {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-success-overlay p {
+    color: var(--text-secondary);
+    max-width: 350px;
+    font-size: 0.9rem;
+}
+
+/* Scrolling Partners Marquee */
+.sponsors-section {
+    padding: 5rem 3.5rem;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 2;
+    transition: var(--transition-tech);
+}
+
+.sponsors-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sponsors-section .tech-num {
+    display: block;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.marquee-track {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding: 1rem 0;
+}
+
+.marquee-track::before,
+.marquee-track::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.marquee-track::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-primary), transparent);
+}
+
+.marquee-track::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-primary), transparent);
+}
+
+.marquee-content {
+    display: flex;
+    gap: 6rem;
+    width: max-content;
+    animation: marqueeScroll 22s linear infinite;
+}
+
+.marquee-content span {
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    transition: var(--transition-tech);
+}
+
+.marquee-content span:hover {
+    opacity: 1;
+    color: var(--accent-orange);
+}
+
+@keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 3rem)); }
+}
+
+/* Laboratory Footer */
+.main-footer {
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--border-color);
+    padding: 5rem 3.5rem 1.5rem 3.5rem;
+    position: relative;
+    z-index: 2;
+    transition: var(--transition-tech);
+}
+
+.footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
+    gap: 3.5rem;
+    margin-bottom: 4rem;
+}
+
+.logo-brand-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.footer-logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-col h2 {
+    font-family: var(--font-syne);
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0;
+}
+
+.footer-col h2 span {
+    color: var(--accent-orange);
+}
+
+.footer-col h4 {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.footer-col p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.social-links a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: var(--transition-tech);
+}
+
+.social-links a:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    transform: translateY(-2px);
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--accent-orange);
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-family: var(--font-inter);
+}
+
+.newsletter-form input:focus {
+    outline: none;
+    border-color: var(--accent-orange);
+}
+
+.newsletter-form button {
+    padding: 0.8rem 1.4rem;
+    background: var(--accent-orange);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-tech);
+}
+
+.newsletter-form button:hover {
+    box-shadow: 0 4px 15px rgba(255,91,0,0.3);
+}
+
+.footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-bottom p {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+}
+
+.footer-bottom-links a {
+    color: var(--accent-orange);
+    text-decoration: none;
+}
+
+/* Modals System */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 6, 8, 0.96);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.close-modal {
+    position: absolute;
+    top: 2rem;
+    right: 3rem;
+    font-size: 3rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--accent-orange);
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 960px;
+    aspect-ratio: 16/9;
+    background: #000000;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    transform: scale(0.93);
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.modal.visible .modal-content {
+    transform: scale(1);
+}
+
+.video-iframe-holder {
+    width: 100%;
+    height: 100%;
+}
+
+.video-iframe-holder iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.lightbox-holder {
+    max-width: 800px;
+    aspect-ratio: auto;
+    background: transparent;
+    border: none;
+}
+
+.lightbox-holder img {
+    max-width: 100%;
+    max-height: 75vh;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    object-fit: contain;
+}
+
+#lightbox-caption {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: #ffffff;
+    text-align: center;
+}
+
+/* Tablet & Mobile responsive overrides */
+@media (max-width: 1024px) {
+    .main-header {
+        padding: 1.2rem 2rem;
+    }
+    .main-header.scrolled {
+        padding: 0.8rem 2rem;
+    }
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+    }
+    .kart-display-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .gallery-bento {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 180px;
+    }
+    .bento-wide {
+        grid-column: span 1;
+    }
+    .lab-cursor {
+        display: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .pointer-text {
+        font-size: 0.45rem;
+        padding: 0.05rem 0.2rem;
+    }
+    .line-tl {
+        width: 30px;
+        transform: rotate(-35deg) translate(-15px, -10px);
+    }
+    .line-bl {
+        width: 30px;
+        transform: rotate(35deg) translate(-15px, 10px);
+    }
+    .line-r {
+        width: 30px;
+        transform: translate(3px, 0);
+    }
+    .kart-preview-card:hover .pointer-line {
+        width: 40px;
+    }
+}
+
+@media (max-width: 580px) {
+    .blueprint-annotations {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-section, 
+    .karts-section, 
+    .competitions-section, 
+    .team-section, 
+    .gallery-section, 
+    .content-grid, 
+    .contact-section, 
+    .sponsors-section {
+        padding: 4rem 1.5rem;
+    }
+    
+    .hero {
+        padding: 6.5rem 1.5rem 3rem 1.5rem;
+    }
+    
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: 3.2rem;
+        text-align: center;
+    }
+    
+    .hero-left {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .hero-telemetry-panels {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+    }
+    
+    .viewfinder-corner {
+        display: none !important;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .main-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 75%;
+        height: 100vh;
+        background: var(--bg-secondary);
+        border-left: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: right 0.4s cubic-bezier(0.85, 0, 0.15, 1);
+        z-index: 10000;
+    }
+    
+    .main-nav.active {
+        right: 0;
+    }
+    
+    .main-nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 2.5rem;
+    }
+    
+    .main-nav a {
+        font-size: 1rem;
+    }
+    
+    .header-actions {
+        margin-right: 1.5rem;
+    }
+    
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 3.5rem;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    
+    .lab-hud-ribbon {
+        padding: 0 1.5rem;
+        font-size: 0.55rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header {
+        padding: 1rem 1.5rem;
+    }
+    .header-cta {
+        display: none;
+    }
+    .gallery-bento {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 200px;
+    }
+    .bento-tall {
+        grid-row: span 1;
+    }
+    .hero-telemetry-panels {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+    .hero-actions .cta-btn {
+        width: 100%;
+        text-align: center;
+    }
+    .lab-hud-ribbon {
+        display: none; /* Hide top HUD on micro-screens to prevent header overlaps */
+    }
+    .main-header {
+        top: 0;
+    }
+}
+
+</style>
+</head>
+<body class="tech-lab">
+    <!-- Technical Blueprint Loader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-helmet">⚙️</div>
+            <div class="blueprint-logo">
+                <span class="tech-num">[SYS_INIT]</span>
+                <div class="logo-brand-preloader">
+                    <img src="logo.png" alt="Night Fury Team Logo" class="loader-logo-img">
+                    <h2>NIGHT FURY</h2>
+                </div>
+            </div>
+            <div class="progress-details">
+                <div class="progress-labels">
+                    <span id="load-status">LOADING SCHEMATICS...</span>
+                    <span class="speed-number">00</span><span class="pct">%</span>
+                </div>
+                <div class="loader-bar">
+                    <div class="loader-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-Time Interactive Lab Cursor Crosshair (Desktop Only) -->
+    <div id="precision-cursor" class="lab-cursor">
+        <div class="cursor-reticle"></div>
+        <span class="cursor-coords">X:0000 // Y:0000</span>
+    </div>
+
+    <!-- Background Blueprint Grid Pattern -->
+    <div class="blueprint-grid-bg"></div>
+
+    <!-- Technical Live HUD Dashboard (Under Header) -->
+    <div class="lab-hud-ribbon">
+        <div class="hud-item"><span class="hud-label">GARAGE_MODE:</span> <span class="hud-val pulse-val">ACTIVE // MONITORING</span></div>
+        <div class="hud-item"><span class="hud-label">TRACK_TEMP:</span> <span class="hud-val" id="hud-track-temp">32.4°C</span></div>
+        <div class="hud-item"><span class="hud-label">AIR_PRESSURE:</span> <span class="hud-val">1013 hPa</span></div>
+        <div class="hud-item"><span class="hud-label">LINK_STATUS:</span> <span class="hud-val text-blue">TELEMETRY_SYNC</span></div>
+        <div class="hud-item"><span class="hud-label">CALIBRATION:</span> <span class="hud-val text-orange">STAGE_04_OK</span></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="logo">
+            <a href="#home">
+                <span class="logo-tag">[ NF_LABS.01 ]</span>
+                <div class="logo-brand">
+                    <img src="logo.png" alt="Night Fury Team Logo" class="logo-img">
+                    <h1>NIGHT <span>FURY</span></h1>
+                </div>
+            </a>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#home" class="active"><span class="nav-num">00.</span> HOME</a></li>
+                <li><a href="#about"><span class="nav-num">01.</span> SCHEMATICS</a></li>
+                <li><a href="#karts"><span class="nav-num">02.</span> THE MACHINES</a></li>
+                <li><a href="#events"><span class="nav-num">03.</span> RACE TIMELINE</a></li>
+                <li><a href="#team"><span class="nav-num">04.</span> CREW</a></li>
+                <li><a href="#photos"><span class="nav-num">05.</span> LOG_FEED</a></li>
+                <li><a href="#contact"><span class="nav-num">06.</span> JOIN</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Laboratory Light Schema">
+                <span class="sun-icon">⚪</span>
+                <span class="moon-icon">⚫</span>
+            </button>
+            <a href="#contact" class="cta-btn header-cta">INITIATE CONNECTION</a>
+        </div>
+        <!-- Mobile menu toggle -->
+        <button class="mobile-menu-btn" aria-label="Toggle Technical Drawer">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- Hero / Landing Section -->
+    <section class="hero" id="home">
+        <!-- Viewfinder Target Bracket Accents -->
+        <div class="viewfinder-corner tl"></div>
+        <div class="viewfinder-corner tr"></div>
+        <div class="viewfinder-corner bl"></div>
+        <div class="viewfinder-corner br"></div>
+
+        <div class="hero-container">
+            <!-- Left Wing: High-Impact Telemetry & Heading -->
+            <div class="hero-left">
+                <div class="technical-system-status">
+                    <span class="pulse-indicator"></span>
+                    <span class="status-text">[ CORE_BUS: ACTIVE // SYS_IGNITION_OK ]</span>
+                </div>
+                
+                <h1 class="main-heading">
+                    ENGINEERED<br>FOR <span class="highlight">VELOCITY</span>
+                </h1>
+                
+                <p class="hero-description">
+                    Night Fury is an advanced collegiate engineering laboratory designing, fabricating, and racing high-performance karts. We turn mathematical CAD models into track-dominating realities.
+                </p>
+                
+                <!-- Hero telemetry panels -->
+                <div class="hero-telemetry-panels">
+                    <div class="hero-tel-panel">
+                        <span class="tel-label">CHASSIS_FRAME</span>
+                        <span class="tel-val">CHROMOLY STEEL</span>
+                    </div>
+                    <div class="hero-tel-panel">
+                        <span class="tel-label">MAX_CALIBRATION</span>
+                        <span class="tel-val">24.2 HP // 12.5k RPM</span>
+                    </div>
+                    <div class="hero-tel-panel">
+                        <span class="tel-label">RATIO_PWR/WT</span>
+                        <span class="tel-val">220 HP/TON</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#about" class="cta-btn btn-primary">SPECIFICATIONS</a>
+                    <a href="#karts" class="cta-btn btn-secondary">DEVELOPMENT STAGE</a>
+                </div>
+            </div>
+            
+            <!-- Right Wing: Interactive CAD Station Drawing Viewport -->
+            <div class="hero-right">
+                <div class="cad-viewport-box">
+                    <!-- Scanning Horizontal Laser Line -->
+                    <div class="cad-laser-scanner"></div>
+                    <div class="cad-grid-overlay"></div>
+                    
+                    <img src="Image.png" alt="Night Fury Go-Kart CAD Rendering" class="cad-chassis-render">
+                    
+                    <!-- HUD Text Metadata labels -->
+                    <div class="cad-hud-label top-left">[ VIEWPORT: CAD_FRONT_ORTHO ]</div>
+                    <div class="cad-hud-label top-right">LAT: 12.9716° N</div>
+                    <div class="cad-hud-label bottom-left">[ ZOOM: 100% // GRID_35MM ]</div>
+                    <div class="cad-hud-label bottom-right">LON: 77.5946° E</div>
+                    
+                    <!-- Pulsing Crosshair Reticle -->
+                    <div class="cad-target-crosshair">
+                        <div class="crosshair-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span class="mouse-wheel"></span>
+            <span class="scroll-text">SYSTEM_SCROLL</span>
+        </div>
+    </section>
+
+    <!-- Technical About Us Section -->
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_01 ]</span>
+                <h2 class="section-title">THE <span>BLUEPRINT</span></h2>
+                <p class="section-subtitle">Our design, fabrication, and track development workflow.</p>
+            </div>
+            
+            <div class="about-grid">
+                <!-- Text / Technical Specs -->
+                <div class="about-details">
+                    <div class="technical-item">
+                        <div class="item-header">
+                            <span class="item-index">01/</span>
+                            <h3>CAD Structural Simulation</h3>
+                        </div>
+                        <p>Chassis components are modeled in SolidWorks and subjected to strict Finite Element Analysis (FEA) to maximize torsional stiffness while minimizing raw mass.</p>
+                    </div>
+                    
+                    <div class="technical-item">
+                        <div class="item-header">
+                            <span class="item-index">02/</span>
+                            <h3>TIG Welding & Custom Fab</h3>
+                        </div>
+                        <p>We hand-weld our chromoly steel frames within Lab 4, refining steering knuckles and weight distributions to target optimal 40/60 balancing.</p>
+                    </div>
+                    
+                    <div class="technical-item">
+                        <div class="item-header">
+                            <span class="item-index">03/</span>
+                            <h3>Data Acquisition & Telemetry</h3>
+                        </div>
+                        <p>Real-time lap tracking, sensor-logged tire temperatures, and engine rpm curves help drivers extract peak performance on track.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Graphic Grid -->
+                <div class="about-stats">
+                    <div class="stat-card" data-val="1">
+                        <div class="stat-inner">
+                            <span class="stat-label">CHAMPIONSHIPS</span>
+                            <div class="stat-number" id="stat-wins">00</div>
+                            <span class="stat-sub">National Level</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-val="25">
+                        <div class="stat-inner">
+                            <span class="stat-label">OPERATIVES</span>
+                            <div class="stat-number" id="stat-members">00</div>
+                            <span class="stat-sub">Engineers & Crew</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-val="1.5">
+                        <div class="stat-inner">
+                            <span class="stat-label">R&D TIMELINE</span>
+                            <div class="stat-number" id="stat-experience">0.0</div>
+                            <span class="stat-sub">Years Track Experience</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-val="100">
+                        <div class="stat-inner">
+                            <span class="stat-label">TEST RECORDS</span>
+                            <div class="stat-number" id="stat-tests">000</div>
+                            <span class="stat-sub">System Validation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kart Showcase Section -->
+    <section class="karts-section" id="karts">
+        <div class="karts-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_02 ]</span>
+                <h2 class="section-title">THE <span>MACHINES</span></h2>
+                <p class="section-subtitle">Championship-winning mechanical assemblies.</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="kart-tabs">
+                <button class="kart-tab-btn active" data-kart="beast">SPEC-24 "BEAST" (ICE)</button>
+                <button class="kart-tab-btn" data-kart="volt">SPEC-26 "VOLT" (EV)</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="kart-display-grid">
+                <!-- Image Side (Rendered as structural drawing with CAD leader line annotations!) -->
+                <div class="kart-preview-card">
+                    <img src="Image.png" alt="Night Fury Go Kart Drawing" class="kart-image active" id="kart-display-img">
+                    <div class="blueprint-crosshair"></div>
+                    <div class="blueprint-axis">X: 2420mm // Y: 1400mm</div>
+                    
+                    <!-- Dynamic CAD Leader Line Annotations -->
+                    <div class="blueprint-annotations">
+                        <div class="anno-pointer anno-aero" style="top: 15%; left: 35%;">
+                            <div class="pointer-dot"></div>
+                            <div class="pointer-line line-tl"></div>
+                            <div class="pointer-text">[ ANNO_01: ADV_AERO_ spoiler ]</div>
+                        </div>
+                        <div class="anno-pointer anno-steering" style="top: 70%; left: 22%;">
+                            <div class="pointer-dot"></div>
+                            <div class="pointer-line line-bl"></div>
+                            <div class="pointer-text">[ ANNO_02: ACKERMANN_STEER ]</div>
+                        </div>
+                        <div class="anno-pointer anno-power" style="top: 45%; left: 75%;">
+                            <div class="pointer-dot"></div>
+                            <div class="pointer-line line-r"></div>
+                            <div class="pointer-text" id="anno-engine-text">[ ANNO_03: 125cc_2_STROKE_ICE ]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Side -->
+                <div class="kart-specs-card">
+                    <div class="kart-spec-details active" id="spec-beast">
+                        <div class="kart-header-data">
+                            <h3>NF-24 BEAST</h3>
+                            <span class="tech-code">[ UNIT_01 // GASOLINE ]</span>
+                        </div>
+                        <p class="kart-desc">Our championship-winning gasoline go-kart. Optimized for high-rev mechanical resilience, aggressive throttle profiles, and extreme cornering force.</p>
+                        
+                        <div class="spec-table">
+                            <div class="spec-row">
+                                <span class="spec-label">TOP SPEED</span>
+                                <span class="spec-val">110 KM/H</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">ACCELERATION</span>
+                                <span class="spec-val">3.8 SEC (0-60)</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">CHASSIS</span>
+                                <span class="spec-val">Chromoly Space Frame</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">POWERPLANT</span>
+                                <span class="spec-val">125cc 2-Stroke ICE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kart-spec-details" id="spec-volt">
+                        <div class="kart-header-data">
+                            <h3>NF-26 VOLT</h3>
+                            <span class="tech-code">[ UNIT_02 // ELECTRIC ]</span>
+                        </div>
+                        <p class="kart-desc">Next-generation electric drivetrain. Features high-density battery packs, active torque-vectoring controllers, and regenerative brake calipers.</p>
+                        
+                        <div class="spec-table">
+                            <div class="spec-row">
+                                <span class="spec-label">TOP SPEED</span>
+                                <span class="spec-val">130 KM/H</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">ACCELERATION</span>
+                                <span class="spec-val">2.9 SEC (0-60)</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">BATTERY CAPACITY</span>
+                                <span class="spec-val">4.2 kWh Lithium-Ion</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">PEAK TORQUE</span>
+                                <span class="spec-val">70 Nm Instant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competitions Timeline Section -->
+    <section class="competitions-section" id="events">
+        <div class="competitions-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_03 ]</span>
+                <h2 class="section-title">RACE <span>TIMELINE</span></h2>
+                <p class="section-subtitle">Championship runs, logs, and upcoming campaigns.</p>
+            </div>
+            
+            <div class="timeline-grid">
+                <!-- Past Card 1 -->
+                <div class="timeline-card completed">
+                    <div class="card-status-label">[ STATUS: COMPLETED ]</div>
+                    <div class="card-header">
+                        <h3>National Karting Championship</h3>
+                        <span class="card-date">15.02.2024</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Meco Kartopia, Bangalore</p>
+                        <p class="card-desc">Challenging technical circuit. Our lightweight steering assembly and aerodynamic chassis profiles yielded top-tier cornering speed.</p>
+                        <div class="card-victory podium-1">
+                            <span class="trophy">🏆</span> 1st Place (National Champions)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Card 2 -->
+                <div class="timeline-card completed">
+                    <div class="card-status-label">[ STATUS: COMPLETED ]</div>
+                    <div class="card-header">
+                        <h3>Regional Speed Challenge</h3>
+                        <span class="card-date">10.11.2023</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Chicane Circuit, Hyderabad</p>
+                        <p class="card-desc">Rainy track conditions. Tested the durability of our waterproofing engine seals and rain-tire compounds.</p>
+                        <div class="card-victory">
+                            🏁 Finished 5th (Out of 45 Teams)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Card 1 -->
+                <div class="timeline-card upcoming">
+                    <div class="card-status-label">[ STATUS: IN_PREPARATION ]</div>
+                    <div class="card-header">
+                        <h3>State Karting Grand Prix</h3>
+                        <span class="card-date">15.06.2026</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Mohite's Racing Academy, Kolhapur</p>
+                        <p class="card-desc">Testing ground for the new carbon spoiler layouts. Focused on high-speed corner stability.</p>
+                        <div class="competition-countdown" id="countdown-gp" data-date="2026-06-15T09:00:00">
+                            CALCULATING...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Card 2 -->
+                <div class="timeline-card upcoming">
+                    <div class="card-status-label">[ STATUS: IN_PREPARATION ]</div>
+                    <div class="card-header">
+                        <h3>Inter-College Karting League</h3>
+                        <span class="card-date">20.08.2026</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-loc">📍 Kari Motor Speedway, Coimbatore</p>
+                        <p class="card-desc">Collegiate electric vs gasoline showdown. Debut run for our NF-26 Volt powertrain.</p>
+                        <div class="competition-countdown" id="countdown-league" data-date="2026-08-20T09:00:00">
+                            CALCULATING...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crew / Team Section -->
+    <section class="team-section" id="team">
+        <div class="team-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_04 ]</span>
+                <h2 class="section-title">THE <span>CREW</span></h2>
+                <p class="section-subtitle">Laboratory technicians, fabricators, and pilots.</p>
+            </div>
+            
+            <div class="team-grid">
+                <!-- Faculty Advisor -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-00</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="Teamcoordinator.png" alt="Dr. Amol R. Rasane">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Dr. Amol R. Rasane</h3>
+                        <span class="crew-role">Faculty Coordinator // Advisor</span>
+                        <p class="crew-desc">Directs academic compliance, research approvals, and collegiate laboratory relations.</p>
+                    </div>
+                </div>
+
+                <!-- Captain -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-01</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="Chetan Thakare">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Chetan Thakare</h3>
+                        <span class="crew-role">Team Captain // Driver</span>
+                        <p class="crew-desc">Oversees chassis dynamics, racing telemetry, and driver coaching logs.</p>
+                    </div>
+                </div>
+
+                <!-- Vice Captain -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-02</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="Pratik Kokate">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Pratik Kokate</h3>
+                        <span class="crew-role">Vice Captain // Welder</span>
+                        <p class="crew-desc">Specializes in precision TIG structural welding and axle alignments.</p>
+                    </div>
+                </div>
+
+                <!-- Manager -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-03</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="Anushka Mali">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>Anushka Mali</h3>
+                        <span class="crew-role">Team Manager // Relations</span>
+                        <p class="crew-desc">Directs sponsorship, budget allocations, and public outreach records.</p>
+                    </div>
+                </div>
+
+                <!-- Pit Chief -->
+                <div class="crew-card">
+                    <div class="crew-badge-header">
+                        <span class="badge-title">NIGHT FURY CREW ID</span>
+                        <span class="badge-id">#NF-04</span>
+                    </div>
+                    <div class="crew-photo">
+                        <img src="student-placeholder.svg" alt="David Brown">
+                        <div class="crew-overlay">
+                            <div class="crew-socials">
+                                <a href="#">💼</a>
+                                <a href="#">📷</a>
+                                <a href="#">📧</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crew-info">
+                        <h3>David Brown</h3>
+                        <span class="crew-role">Crew Chief // Telemetry</span>
+                        <p class="crew-desc">Directs garage setup, tire temp datalogs, and gearbox tuning schedules.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento Gallery Section -->
+    <section class="gallery-section" id="photos">
+        <div class="gallery-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_05 ]</span>
+                <h2 class="section-title">THE <span>LOGS</span></h2>
+                <p class="section-subtitle">Visual feeds from engineering schematics to pit stop runs.</p>
+            </div>
+            
+            <div class="gallery-bento">
+                <div class="gallery-item bento-tall">
+                    <img src="Image.png" alt="Chassis CAD Outline">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_01 // CHASSIS_FEA</h4>
+                        <p>Torsional load structural tests</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-wide">
+                    <img src="Image.png" alt="Kart on Racetrack">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_02 // SPEED_RUN</h4>
+                        <p>High speed telemetry capture</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-standard">
+                    <img src="Image.png" alt="Podium celebration">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_03 // PODIUM_FINISH</h4>
+                        <p>National Championship win</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-standard">
+                    <img src="Image.png" alt="Engine block Assembly">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_04 // CARBURETOR_TUNE</h4>
+                        <p>Jetting adjustments inside Lab 4</p>
+                    </div>
+                </div>
+                <div class="gallery-item bento-wide">
+                    <img src="Image.png" alt="Aerodynamic air resistance simulation">
+                    <div class="gallery-overlay">
+                        <h4>CAM_LOG_05 // CFD_SPOILER</h4>
+                        <p>Airfoil pressure flow mapping</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Sections Grid -->
+    <section class="content-grid">
+        <div class="content-card">
+            <div class="card-meta">[ REGISTRATION // SESSION_2026 ]</div>
+            <h3>Club Membership</h3>
+            <p>Interested in joining the racing development lab? Registrations are currently open for structural design, battery wiring, and driver recruitment.</p>
+            <div class="card-details">
+                <span>Prerequisites: Monospace log dedication & CAD basics.</span>
+            </div>
+            <a href="#contact" class="card-btn">INITIATE APP</a>
+        </div>
+
+        <div class="content-card">
+            <div class="card-meta">[ INFORMATION // ABOUT_US ]</div>
+            <h3>The Motorsport Lab</h3>
+            <p>Born inside the college Mechanical Engineering department, Night Fury serves as a platform to test advanced chassis theories on active asphalt racetracks.</p>
+            <p>We are funded by institutional departments, engineering alumni, and industry automotive sponsors.</p>
+            <a href="#about" class="card-btn">TECHNICAL DOSSIER</a>
+        </div>
+
+        <div class="content-card">
+            <div class="card-meta">[ LIVE TELEMETRY // REAL_TIME ]</div>
+            <h3>Latest Speed Runs</h3>
+            
+            <!-- Real-Time Telemetry Graph Canvas (Details Upgrade) -->
+            <div class="telemetry-canvas-container">
+                <canvas id="telemetry-graph" width="280" height="140"></canvas>
+                <div class="canvas-labels">
+                    <span class="active-rpm">RPM: <strong id="telemetry-rpm">5200</strong></span>
+                    <span class="active-speed">VEL: <strong id="telemetry-speed">0.0</strong> km/h</span>
+                </div>
+            </div>
+            
+            <p class="video-meta">ENGINE_RPM // live calculated lab simulation</p>
+            <button class="card-btn" id="play-video-btn">ACCESS FOOTAGE</button>
+        </div>
+    </section>
+
+    <!-- Contact & Join Us Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <div class="section-header">
+                <span class="tech-num">[ SECTION_06 ]</span>
+                <h2 class="section-title">ESTABLISH <span>LINK</span></h2>
+                <p class="section-subtitle">Become a driver, technical partner, or corporate sponsor.</p>
+            </div>
+            
+            <div class="contact-grid">
+                <!-- Info -->
+                <div class="contact-info-panel">
+                    <h3>Lab Coordinates</h3>
+                    <p>Connect with our technical leads or visit our workshop facilities directly.</p>
+                    
+                    <div class="coord-list">
+                        <div class="coord-item">
+                            <span class="coord-label">[ EMAIL ]</span>
+                            <span class="coord-val">nightfury@college.edu</span>
+                        </div>
+                        <div class="coord-item">
+                            <span class="coord-label">[ PHONE ]</span>
+                            <span class="coord-val">+91 98765 43210</span>
+                        </div>
+                        <div class="coord-item">
+                            <span class="coord-label">[ LOC ]</span>
+                            <span class="coord-val">Department of Mechanical Engineering, Workshop Lab 4, City</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="contact-form-panel">
+                    <form class="tech-form" id="contact-form">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="name">ID_NAME</label>
+                                <input type="text" id="name" placeholder="Enter Full Name" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="email">ID_EMAIL</label>
+                                <input type="email" id="email" placeholder="email@address.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="subject">LINK_PURPOSE</label>
+                            <select id="subject" required>
+                                <option value="" disabled selected>Select option...</option>
+                                <option value="join">Recruitment / Join Crew</option>
+                                <option value="sponsor">Corporate Sponsorship</option>
+                                <option value="general">Engineering Questions</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="message">LOG_MESSAGE</label>
+                            <textarea id="message" rows="4" placeholder="Type your message details here..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="cta-btn btn-primary submit-btn">TRANSMIT PACKET</button>
+                    </form>
+                    
+                    <div class="form-success-overlay" id="form-success">
+                        <span class="success-icon">✓</span>
+                        <h3>PACKET TRANSMITTED!</h3>
+                        <p>Connection initialized successfully. Telemetry response pending. Standby 12-24 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsors Scrolling Marquee -->
+    <section class="sponsors-section">
+        <div class="sponsors-container">
+            <span class="tech-num">[ PARTNERS ]</span>
+            <div class="marquee-track">
+                <div class="marquee-content">
+                    <span>[ APEX_RACING ]</span>
+                    <span>[ PRO_TOOL_CO ]</span>
+                    <span>[ VOLT_DYNAMICS ]</span>
+                    <span>[ NEXUS_ENERGIES ]</span>
+                    <span>[ VICTOR_HELMETS ]</span>
+                    <span>[ CYBER_AUTOMOTIVE ]</span>
+                    <!-- Loop duplication -->
+                    <span>[ APEX_RACING ]</span>
+                    <span>[ PRO_TOOL_CO ]</span>
+                    <span>[ VOLT_DYNAMICS ]</span>
+                    <span>[ NEXUS_ENERGIES ]</span>
+                    <span>[ VICTOR_HELMETS ]</span>
+                    <span>[ CYBER_AUTOMOTIVE ]</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Laboratory Footer -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo-brand-footer">
+                    <img src="logo.png" alt="Night Fury Team Logo" class="footer-logo-img">
+                    <h2>NIGHT <span>FURY</span></h2>
+                </div>
+                <p>Advanced engineering and development racing laboratory.</p>
+                <div class="social-links">
+                    <a href="#">FB</a>
+                    <a href="#">IG</a>
+                    <a href="#">TW</a>
+                    <a href="#">YT</a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>INDEX</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">00. Home</a></li>
+                    <li><a href="#about">01. Schematics</a></li>
+                    <li><a href="#karts">02. The Machines</a></li>
+                    <li><a href="#events">03. Race Timeline</a></li>
+                    <li><a href="#team">04. Crew</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>CONTACTS</h4>
+                <p>Email: nightfury@college.edu</p>
+                <p>Phone: +91 98765 43210</p>
+                <p>Workshop Lab 4, Campus Grounds</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>GARAGE LOGS</h4>
+                <p>Subscribe to telemetry updates.</p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <input type="email" placeholder="address@email.com" required>
+                    <button type="submit">SUB</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Night Fury Racing Laboratory. Developed & Maintained by <a href="https://github.com/developereskull" target="_blank" style="color: var(--accent-orange); text-decoration: none; font-weight: 700; transition: var(--transition-tech);">Kunal Ahire @ developereskull</a></p>
+            <div class="footer-bottom-links">
+                <a href="#">PRIVACY</a>
+                <span>//</span>
+                <a href="#">TERMS</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+        <span class="close-modal" id="close-video">&times;</span>
+        <div class="modal-content">
+            <div class="video-iframe-holder">
+                <iframe id="modal-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox-modal" class="modal">
+        <span class="close-modal" id="close-lightbox">&times;</span>
+        <div class="modal-content lightbox-holder">
+            <img id="lightbox-img" src="" alt="Datalog expansion">
+            <div id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Optional Ambience Audios -->
+    <audio id="engine-start-sound" src="https://assets.mixkit.co/active_storage/sfx/2653/2653-84.wav" preload="auto"></audio>
+    <audio id="engine-rev-sound" src="https://assets.mixkit.co/active_storage/sfx/2816/2816-84.wav" preload="auto"></audio>
+
+    <script>
+// NIGHT FURY ENGINEERING LABORATORY // CONTROL SCRIPT
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // ==========================================
+    // 1. SYSTEM INITIALIZATION & PRELOADER LOGS
+    // ==========================================
+    const preloader = document.getElementById('preloader');
+    const progress = document.querySelector('.loader-progress');
+    const loadStatus = document.getElementById('load-status');
+    const speedNumber = document.querySelector('.speed-number');
+    const engineStartSound = document.getElementById('engine-start-sound');
+    
+    const sysLogs = [
+        { limit: 20, text: "INIT SYSTEM_BUS..." },
+        { limit: 40, text: "LOADING CHASSIS_FRAME.CAD..." },
+        { limit: 60, text: "COMPILING TELEMETRY_MATRIX..." },
+        { limit: 80, text: "OPTIMIZING SHOCK_SPRING_LOAD..." },
+        { limit: 99, text: "ALIGNING STEERING_GEOMETRY..." },
+        { limit: 100, text: "SYSTEM_READY // IGNITION" }
+    ];
+
+    let count = 0;
+    const interval = setInterval(() => {
+        count += Math.floor(Math.random() * 6) + 2;
+        if (count >= 100) {
+            count = 100;
+            clearInterval(interval);
+            
+            if (speedNumber) speedNumber.textContent = "100";
+            if (progress) progress.style.width = "100%";
+            if (loadStatus) loadStatus.textContent = "SYSTEM_READY // IGNITION";
+            
+            // Try to trigger audio on ignition
+            if (engineStartSound) {
+                engineStartSound.volume = 0.4;
+                engineStartSound.play().catch(() => {/* Autoplay safeguard */});
+            }
+            
+            setTimeout(() => {
+                if (preloader) preloader.classList.add('loaded');
+                // Trigger stats count up after preloader hides
+                startStatsCounter();
+            }, 600);
+        } else {
+            if (speedNumber) speedNumber.textContent = count.toString().padStart(2, '0');
+            if (progress) progress.style.width = count + '%';
+            
+            // Cycle through monospace log steps based on progress
+            const logItem = sysLogs.find(log => count <= log.limit);
+            if (logItem && loadStatus) {
+                loadStatus.textContent = logItem.text;
+            }
+        }
+    }, 40);
+
+
+    // ==========================================
+    // 2. INTERACTIVE COORDINATE CURSOR CROSSHAIR
+    // ==========================================
+    const precisionCursor = document.getElementById('precision-cursor');
+    const cursorCoords = precisionCursor ? precisionCursor.querySelector('.cursor-coords') : null;
+    
+    if (precisionCursor) {
+        document.addEventListener('mousemove', (e) => {
+            // Reposition crosshair reticle smoothly
+            precisionCursor.style.left = e.clientX + 'px';
+            precisionCursor.style.top = e.clientY + 'px';
+            
+            // Update active coordinate tags in real-time
+            if (cursorCoords) {
+                const posX = e.clientX.toString().padStart(4, '0');
+                const posY = e.clientY.toString().padStart(4, '0');
+                cursorCoords.textContent = `X:${posX} // Y:${posY}`;
+            }
+        });
+    }
+
+
+    // ==========================================
+    // 3. LABORATORY AUDIO AMBIENCE
+    // ==========================================
+    const soundToggle = document.getElementById('sound-toggle');
+    const engineRevSound = document.getElementById('engine-rev-sound');
+    
+    if (soundToggle && engineRevSound) {
+        soundToggle.addEventListener('click', () => {
+            soundToggle.classList.toggle('active');
+            
+            if (soundToggle.classList.contains('active')) {
+                engineRevSound.volume = 0.25;
+                engineRevSound.loop = true;
+                engineRevSound.play().catch(() => {
+                    alert("Click anywhere on the lab interface first to enable laboratory audio!");
+                    soundToggle.classList.remove('active');
+                });
+            } else {
+                engineRevSound.pause();
+            }
+        });
+    }
+
+
+    // ==========================================
+    // 4. RESPONSIVE NAVIGATION & HAMBURGER
+    // ==========================================
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mainNav = document.querySelector('.main-nav');
+    
+    if (mobileMenuBtn && mainNav) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            mainNav.classList.toggle('active');
+            
+            // Hamburger animation
+            const spans = mobileMenuBtn.querySelectorAll('span');
+            if (mobileMenuBtn.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+        
+        // Close menu drawer when navigation items are clicked
+        mainNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                mainNav.classList.remove('active');
+                const spans = mobileMenuBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
+    }
+
+
+    // ==========================================
+    // 5. HEADER BACKGROUND SCROLL
+    // ==========================================
+    const header = document.querySelector('.main-header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+
+    // ==========================================
+    // 6. INTERACTIVE BLUEPRINT TABS SWITCHER & LEADER UPDATES
+    // ==========================================
+    const kartTabBtns = document.querySelectorAll('.kart-tab-btn');
+    const kartDisplayImg = document.getElementById('kart-display-img');
+    const annoEngineText = document.getElementById('anno-engine-text');
+    
+    kartTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active classes
+            kartTabBtns.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.kart-spec-details').forEach(spec => spec.classList.remove('active'));
+            
+            // Active state trigger
+            btn.classList.add('active');
+            const kartType = btn.getAttribute('data-kart');
+            const targetSpec = document.getElementById(`spec-${kartType}`);
+            targetSpec.classList.add('active');
+            
+            // Adjust the structural drawing filter based on powerplant type
+            if (kartType === 'volt') {
+                // Electro Blue Blueprint Filter
+                kartDisplayImg.style.filter = 'invert(1) sepia(1) saturate(5) hue-rotate(180deg) drop-shadow(0 0 10px rgba(0, 102, 255, 0.4))';
+                
+                // Update blueprint annotation leader text to electric powerplant details
+                if (annoEngineText) {
+                    annoEngineText.textContent = "[ ANNO_03: 4.2kWh_EV_UNIT // 70Nm ]";
+                }
+            } else {
+                // Classic Carbon Gray / White
+                kartDisplayImg.style.filter = 'none';
+                
+                // Restore gasoline engine details
+                if (annoEngineText) {
+                    annoEngineText.textContent = "[ ANNO_03: 125cc_2_STROKE_ICE ]";
+                }
+            }
+        });
+    });
+
+
+    // ==========================================
+    // 7. DYNAMIC HUD TELEMETRY TRACK VARIANCES
+    // ==========================================
+    const hudTrackTemp = document.getElementById('hud-track-temp');
+    if (hudTrackTemp) {
+        setInterval(() => {
+            // Gently drift temperatures between 32.1 and 32.9 to simulate live track sensor feeds
+            const variance = (32.0 + Math.random() * 0.9).toFixed(1);
+            hudTrackTemp.textContent = `${variance}°C`;
+        }, 3000);
+    }
+
+
+    // ==========================================
+    // 8. REAL-TIME CANVAS OSCILLOSCOPE TELEMETRY
+    // ==========================================
+    const canvas = document.getElementById('telemetry-graph');
+    const telemetryRpmText = document.getElementById('telemetry-rpm');
+    const telemetrySpeedText = document.getElementById('telemetry-speed');
+    
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let points = Array(50).fill(50);
+        let time = 0;
+        
+        const resizeCanvas = () => {
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+        };
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        const renderGraph = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 1. Draw grids
+            ctx.strokeStyle = document.body.classList.contains('light-theme') ? 'rgba(0, 102, 255, 0.05)' : 'rgba(255, 91, 0, 0.05)';
+            ctx.lineWidth = 1;
+            
+            const gridSize = 20;
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // 2. Generate new fluctuating telemetry value
+            time += 0.15;
+            // Complex wave summation simulating active motor rev variations
+            const nextVal = 55 + (Math.sin(time) * 20) + (Math.cos(time * 2.3) * 10) + (Math.random() * 5);
+            points.push(nextVal);
+            points.shift();
+            
+            // Update metric texts
+            if (telemetryRpmText) {
+                // Scale values to realistic RPMs (4800 to 7200)
+                const currentRpm = Math.floor(4500 + (nextVal * 32));
+                telemetryRpmText.textContent = currentRpm.toString().padStart(4, '0');
+            }
+            if (telemetrySpeedText) {
+                // Scale values to realistic speeds (92.4 to 109.8 km/h)
+                const currentSpeed = (88.0 + (nextVal * 0.22)).toFixed(1);
+                telemetrySpeedText.textContent = currentSpeed;
+            }
+            
+            // 3. Draw active speed curves
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = document.body.classList.contains('light-theme') ? '#0066ff' : '#ff5b00';
+            
+            for (let i = 0; i < points.length; i++) {
+                const x = (canvas.width / (points.length - 1)) * i;
+                // Invert graph coordinates
+                const y = canvas.height - points[i];
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+            
+            // 4. Fill subtle area below line
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.fillStyle = document.body.classList.contains('light-theme') ? 'rgba(0, 102, 255, 0.05)' : 'rgba(255, 91, 0, 0.03)';
+            ctx.fill();
+            
+            requestAnimationFrame(renderGraph);
+        };
+        
+        renderGraph();
+    }
+
+
+    // ==========================================
+    // 9. LAB DECIMAL STATS COUNTER-UP
+    // ==========================================
+    function startStatsCounter() {
+        const statsData = [
+            { id: 'stat-wins', target: 1, decimals: 0, suffix: '' },
+            { id: 'stat-members', target: 25, decimals: 0, suffix: '+' },
+            { id: 'stat-experience', target: 1.5, decimals: 1, suffix: '' },
+            { id: 'stat-tests', target: 100, decimals: 0, suffix: '%' }
+        ];
+        
+        statsData.forEach(item => {
+            const el = document.getElementById(item.id);
+            if (!el) return;
+            
+            let current = 0;
+            const steps = 40;
+            const stepVal = item.target / steps;
+            let currentStep = 0;
+            
+            const timer = setInterval(() => {
+                currentStep++;
+                current += stepVal;
+                
+                if (currentStep >= steps) {
+                    clearInterval(timer);
+                    el.textContent = item.target.toFixed(item.decimals) + item.suffix;
+                } else {
+                    el.textContent = current.toFixed(item.decimals) + item.suffix;
+                }
+            }, 25);
+        });
+    }
+
+
+    // ==========================================
+    // 10. REAL-TIME COMPETITION TIMER
+    // ==========================================
+    const countdowns = document.querySelectorAll('.competition-countdown');
+    
+    countdowns.forEach(timer => {
+        const dateStr = timer.getAttribute('data-date');
+        if (!dateStr) return;
+        
+        const targetTime = new Date(dateStr).getTime();
+        
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const diff = targetTime - now;
+            
+            if (diff <= 0) {
+                timer.innerHTML = "🏁 SCHED_ACTIVE // COMMENCING";
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            timer.innerHTML = `T-MINUS: <strong>${days}d ${hours}h ${minutes}m ${seconds}s</strong>`;
+        };
+        
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    });
+
+
+    // ==========================================
+    // 11. BENTO PHOTO LIGHTBOX MODAL
+    // ==========================================
+    const lightbox = document.getElementById('lightbox-modal');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const closeLightbox = document.getElementById('close-lightbox');
+    
+    if (lightbox && lightboxImg && lightboxCaption) {
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                const title = item.querySelector('h4').textContent;
+                const desc = item.querySelector('p').textContent;
+                
+                lightboxImg.src = img.src;
+                lightboxCaption.innerHTML = `<strong>${title}</strong> // ${desc}`;
+                lightbox.classList.add('visible');
+            });
+        });
+    }
+    
+    if (closeLightbox) {
+        closeLightbox.addEventListener('click', () => {
+            lightbox.classList.remove('visible');
+        });
+    }
+
+
+    // ==========================================
+    // 12. IMPERSIVE POV VIDEO MODAL
+    // ==========================================
+    const videoModal = document.getElementById('video-modal');
+    const modalIframe = document.getElementById('modal-iframe');
+    const playVideoBtn = document.getElementById('play-video-btn');
+    const allVideosBtn = document.getElementById('all-videos-btn');
+    const closeVideo = document.getElementById('close-video');
+    
+    function openRacingPOV(e) {
+        e.preventDefault();
+        if (videoModal && modalIframe) {
+            // High speed POV go kart telemetry track run
+            modalIframe.src = "https://www.youtube.com/embed/z4sT-YpEExY?autoplay=1";
+            videoModal.classList.add('visible');
+        }
+    }
+    
+    if (playVideoBtn) playVideoBtn.addEventListener('click', openRacingPOV);
+    if (allVideosBtn) allVideosBtn.addEventListener('click', openRacingPOV);
+    
+    if (closeVideo && videoModal && modalIframe) {
+        closeVideo.addEventListener('click', () => {
+            videoModal.classList.remove('visible');
+            modalIframe.src = ""; // Clear source to stop playback
+        });
+    }
+
+
+    // ==========================================
+    // 13. TELEMETRY PACKET FORM SUBMISSION
+    // ==========================================
+    const contactForm = document.getElementById('contact-form');
+    const formSuccess = document.getElementById('form-success');
+    
+    if (contactForm && formSuccess) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            contactForm.classList.add('hidden');
+            formSuccess.classList.add('visible');
+            
+            setTimeout(() => {
+                contactForm.reset();
+            }, 600);
+        });
+    }
+
+
+    // ==========================================
+    // 14. NEWSLETTER LOGS
+    // ==========================================
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert("SUCCESS // TELEMETRY LOG CHANNEL ALIGNED!");
+            newsletterForm.reset();
+        });
+    }
+
+
+    // ==========================================
+    // 15. ACTIVE NAV SPY
+    // ==========================================
+    const sections = document.querySelectorAll('section[id], header[id]');
+    const navLinks = document.querySelectorAll('.main-nav a');
+    
+    window.addEventListener('scroll', () => {
+        let currentSectionId = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 180;
+            if (window.pageYOffset >= sectionTop) {
+                currentSectionId = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+
+    // ==========================================
+    // 16. LABORATORY SCHEMA (LIGHT SCHEMA) MODE
+    // ==========================================
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+    }
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            let theme = 'dark';
+            if (document.body.classList.contains('light-theme')) {
+                theme = 'light';
+            }
+            localStorage.setItem('theme', theme);
+        });
+    }
+
+
+    // ==========================================
+    // 17. MODAL DISMISS ACTIONS
+    // ==========================================
+    window.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            lightbox.classList.remove('visible');
+        }
+        if (e.target === videoModal) {
+            videoModal.classList.remove('visible');
+            if (modalIframe) modalIframe.src = "";
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (lightbox) lightbox.classList.remove('visible');
+            if (videoModal) {
+                videoModal.classList.remove('visible');
+                if (modalIframe) modalIframe.src = "";
+            }
+        }
+    });
+});
+
+</script>
+</body>
+</html>

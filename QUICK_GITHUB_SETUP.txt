@@ -1,0 +1,65 @@
+========================================
+QUICK GITHUB SETUP FOR "NF" REPOSITORY
+========================================
+
+STEP 1: Create GitHub Repository
+---------------------------------
+1. Go to: https://github.com/new
+2. Repository name: nf
+3. Description: Night Fury Racing Team Website
+4. Choose: Public
+5. DO NOT check any boxes (no README, no .gitignore, no license)
+6. Click "Create repository"
+
+
+STEP 2: Push Your Project to GitHub
+------------------------------------
+Copy and paste these commands in Command Prompt or PowerShell:
+
+cd C:\Users\Kunal\Desktop\nightfury
+
+git remote add origin https://github.com/YOUR-USERNAME/nf.git
+
+git branch -M main
+
+git push -u origin main
+
+
+IMPORTANT: Replace YOUR-USERNAME with your actual GitHub username!
+
+
+STEP 3: Enter Credentials
+--------------------------
+When prompted:
+- Username: [Your GitHub username]
+- Password: [Use Personal Access Token, NOT your password]
+
+To get Personal Access Token:
+1. Go to: https://github.com/settings/tokens
+2. Click "Generate new token (classic)"
+3. Name it: "NF Website"
+4. Check: "repo" (full control)
+5. Click "Generate token"
+6. COPY the token immediately
+7. Use this token as your password
+
+
+STEP 4: Verify Upload
+----------------------
+Go to: https://github.com/YOUR-USERNAME/nf
+You should see all your files!
+
+
+OPTIONAL: Enable Free Hosting
+------------------------------
+1. Go to repository Settings
+2. Click "Pages" in left sidebar
+3. Under "Source", select "main" branch
+4. Click "Save"
+5. Your site will be live at:
+   https://YOUR-USERNAME.github.io/nf/
+
+
+========================================
+That's it! Your project is now on GitHub!
+========================================
