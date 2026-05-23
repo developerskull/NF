@@ -199,7 +199,8 @@ This is a college team project. For suggestions or improvements:
 
 ## 📄 License
 
-© 2024 Night Fury Racing Team. All rights reserved.
+©developerskull 
+All rights reserved.
 
 ## 📞 Contact
 
@@ -216,6 +217,6 @@ This is a college team project. For suggestions or improvements:
 
 ---
 
-**Built with ❤️ by Team Night Fury**
+**Built By kunal Ahire
 
 *"Built For Speed. Driven By Passion."*
